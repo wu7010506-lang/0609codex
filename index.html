@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大學生申請工具箱 | 實習履歷、自傳、推薦信、讀書計畫模板</title>
+  <meta name="description" content="免費的大學生申請文件工具箱，快速產生實習履歷條列、自傳大綱、教授推薦信邀請信、獎學金檢查清單、交換學生讀書計畫與英文履歷用語。">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "大學生申請工具箱",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TWD"},
+    "description": "免費的大學生申請文件工具，產生履歷條列、自傳大綱、推薦信邀請信、獎學金清單與交換學生讀書計畫。"
+  }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="回到首頁">
+      <span class="brand-mark">A+</span>
+      <span>申請工具箱</span>
+    </a>
+    <nav class="nav" aria-label="主要導覽">
+      <a href="#tools">工具</a>
+      <a href="#templates">模板</a>
+      <a href="#guides">指南</a>
+      <a href="#revenue">網站變現</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="workspace" aria-labelledby="workspace-title">
+      <div class="workspace-copy">
+        <p class="eyebrow">大學生零成本申請文件工作台</p>
+        <h1 id="workspace-title">把實習、交換、獎學金文件先做出 80 分初稿</h1>
+        <p class="lead">輸入你的科系、經歷和目標，直接產出可編輯的履歷條列、自傳大綱、信件與讀書計畫骨架。</p>
+        <div class="quick-stats" aria-label="網站內容摘要">
+          <span><strong>6</strong> 個工具</span>
+          <span><strong>10</strong> 組模板</span>
+          <span><strong>0</strong> 成本上線</span>
+        </div>
+      </div>
+
+      <form class="tool-panel" id="toolForm">
+        <div class="panel-head">
+          <h2>文件產生器</h2>
+          <select id="toolType" aria-label="選擇工具">
+            <option value="resume">實習履歷條列</option>
+            <option value="bio">自傳大綱</option>
+            <option value="email">教授推薦信邀請信</option>
+            <option value="scholarship">獎學金申請清單</option>
+            <option value="exchange">交換學生讀書計畫</option>
+            <option value="english">英文履歷用語</option>
+          </select>
+        </div>
+
+        <label>
+          科系 / 背景
+          <input id="major" type="text" placeholder="例：資管系大三、餐旅管理系大二">
+        </label>
+        <label>
+          申請目標
+          <input id="goal" type="text" placeholder="例：資料分析實習、交換到日本、校內獎學金">
+        </label>
+        <label>
+          經歷與亮點
+          <textarea id="experience" rows="5" placeholder="例：專題、打工、社團、競賽、課程、證照、語言能力"></textarea>
+        </label>
+
+        <div class="actions">
+          <button class="primary" type="submit">產生初稿</button>
+          <button class="ghost" id="copyResult" type="button">複製結果</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="result-band" aria-live="polite">
+      <div class="section-heading">
+        <p class="eyebrow">可直接修改</p>
+        <h2>產出結果</h2>
+      </div>
+      <pre id="resultBox">選擇工具並輸入資料後，這裡會產生你的申請文件初稿。</pre>
+    </section>
+
+    <section class="tool-grid-section" id="tools">
+      <div class="section-heading">
+        <p class="eyebrow">第一版免費工具</p>
+        <h2>用工具頁吃長尾搜尋</h2>
+      </div>
+      <div class="tool-grid">
+        <article>
+          <h3>實習履歷條列產生器</h3>
+          <p>把課程、專題、打工和社團轉成履歷可用的成果句。</p>
+        </article>
+        <article>
+          <h3>自傳大綱產生器</h3>
+          <p>整理成背景、動機、能力、未來規劃四段式結構。</p>
+        </article>
+        <article>
+          <h3>推薦信邀請信</h3>
+          <p>產生寄給教授的禮貌信件，含附件與截止日期提醒。</p>
+        </article>
+        <article>
+          <h3>獎學金清單</h3>
+          <p>依申請類型列出文件、證明、成績和送件前檢查項。</p>
+        </article>
+        <article>
+          <h3>交換讀書計畫</h3>
+          <p>產生交換學生常用的學習動機、選校理由和返國規劃。</p>
+        </article>
+        <article>
+          <h3>英文履歷用語</h3>
+          <p>把中文經歷轉成更像履歷的英文動詞和句型。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="templates" id="templates">
+      <div class="section-heading">
+        <p class="eyebrow">日後可商品化</p>
+        <h2>模板包雛形</h2>
+      </div>
+      <div class="template-list">
+        <button data-template="intern">實習申請包</button>
+        <button data-template="exchange">交換學生包</button>
+        <button data-template="grad">研究所推甄包</button>
+        <button data-template="scholarship">獎學金申請包</button>
+      </div>
+      <div class="template-output" id="templateOutput">
+        <h3>實習申請包</h3>
+        <p>履歷一頁版、自傳 800 字版、Cover Letter、面試自我介紹、追蹤信。</p>
+      </div>
+    </section>
+
+    <section class="guides" id="guides">
+      <div class="section-heading">
+        <p class="eyebrow">第一批 SEO 頁面</p>
+        <h2>核心指南</h2>
+      </div>
+      <div class="guide-list">
+        <a href="pages/internship-resume.html">
+          <span>實習履歷怎麼寫</span>
+          <small>從沒有工作經驗到一頁履歷</small>
+        </a>
+        <a href="pages/student-autobiography.html">
+          <span>大學生自傳範例</span>
+          <small>四段式架構與內容取捨</small>
+        </a>
+        <a href="pages/professor-recommendation-email.html">
+          <span>推薦信邀請信範例</span>
+          <small>寄給教授前先整理好資訊</small>
+        </a>
+        <a href="pages/exchange-study-plan.html">
+          <span>交換學生讀書計畫</span>
+          <small>動機、選校、課程與返國規劃</small>
+        </a>
+        <a href="pages/scholarship-application.html">
+          <span>獎學金申請文件</span>
+          <small>自傳、證明與檢查清單</small>
+        </a>
+        <a href="pages/english-resume-phrases.html">
+          <span>英文履歷用語</span>
+          <small>動詞、句型與條列範例</small>
+        </a>
+        <a href="pages/cover-letter.html">
+          <span>Cover Letter 範例</span>
+          <small>實習與交換申請皆可改寫</small>
+        </a>
+        <a href="pages/graduate-school-portfolio.html">
+          <span>研究所推甄備審</span>
+          <small>資料順序與專題摘要</small>
+        </a>
+        <a href="pages/interview-self-introduction.html">
+          <span>面試自我介紹</span>
+          <small>30 秒、1 分鐘、3 分鐘版本</small>
+        </a>
+        <a href="pages/application-checklist.html">
+          <span>申請文件總清單</span>
+          <small>送件前避免漏件</small>
+        </a>
+      </div>
+    </section>
+
+    <section class="revenue" id="revenue">
+      <div>
+        <p class="eyebrow">變現路線</p>
+        <h2>先工具流量，後模板收入</h2>
+      </div>
+      <ol>
+        <li>免費工具頁累積搜尋流量。</li>
+        <li>把高需求工具整理成 NT$99-199 模板包。</li>
+        <li>流量穩定後加入廣告或履歷工具聯盟連結。</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>大學生申請工具箱 - 免費初稿工具，重要文件送出前仍建議自行校對與客製化。</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
