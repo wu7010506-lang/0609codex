@@ -232,6 +232,7 @@ button {
 .tool-grid-section,
 .templates,
 .guides,
+.search-plan,
 .revenue {
   padding: 54px 0;
   border-top: 1px solid var(--line);
@@ -444,4 +445,26 @@ footer {
     display: grid;
     grid-template-columns: 1fr;
   }
+}
+
+
+.faq {
+  margin-top: 42px;
+}
+
+.faq details {
+  margin-top: 12px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.faq p {
+  margin-bottom: 0;
 }

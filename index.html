@@ -5,17 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>大學生申請工具箱 | 實習履歷、自傳、推薦信、讀書計畫模板</title>
   <meta name="description" content="免費的大學生申請文件工具箱，快速產生實習履歷條列、自傳大綱、教授推薦信邀請信、獎學金檢查清單、交換學生讀書計畫與英文履歷用語。">
+  <link rel="canonical" href="https://wu7010506-lang.github.io/0609codex/">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="大學生申請工具箱 | 實習履歷、自傳、推薦信、讀書計畫模板">
+  <meta property="og:description" content="免費的大學生申請文件工具箱，快速產生實習履歷、自傳、推薦信邀請信、獎學金清單、交換學生讀書計畫與英文履歷用語。">
+  <meta property="og:url" content="https://wu7010506-lang.github.io/0609codex/">
+  <meta property="og:site_name" content="大學生申請工具箱">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="大學生申請工具箱 | 實習履歷、自傳、推薦信、讀書計畫模板">
+  <meta name="twitter:description" content="免費的大學生申請文件工具箱，快速產生實習履歷、自傳、推薦信邀請信、獎學金清單、交換學生讀書計畫與英文履歷用語。">
   <link rel="stylesheet" href="styles.css">
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "大學生申請工具箱",
-    "applicationCategory": "EducationalApplication",
-    "operatingSystem": "Any",
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TWD"},
-    "description": "免費的大學生申請文件工具，產生履歷條列、自傳大綱、推薦信邀請信、獎學金清單與交換學生讀書計畫。"
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "大學生申請工具箱",
+      "url": "https://wu7010506-lang.github.io/0609codex/",
+      "inLanguage": "zh-Hant",
+      "description": "免費的大學生申請文件工具箱，快速產生實習履歷、自傳、推薦信邀請信、獎學金清單、交換學生讀書計畫與英文履歷用語。"
+    },
+    {
+      "@type": "WebApplication",
+      "name": "大學生申請工具箱",
+      "url": "https://wu7010506-lang.github.io/0609codex/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TWD"
+      },
+      "description": "免費的大學生申請文件工具箱，快速產生實習履歷、自傳、推薦信邀請信、獎學金清單、交換學生讀書計畫與英文履歷用語。"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "這個網站真的免費嗎？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "目前網站工具與指南頁免費使用，不需要登入，也不需要 API key。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "這些申請文件可以直接送出嗎？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "不建議直接送出。工具會提供初稿與架構，送出前仍應依真實經歷和申請規定修改。"
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
 </head>
 <body>
@@ -47,14 +94,14 @@
 
       <form class="tool-panel" id="toolForm">
         <div class="panel-head">
-          <h2>文件產生器</h2>
+          <h2>申請工作台</h2>
           <select id="toolType" aria-label="選擇工具">
-            <option value="resume">實習履歷條列</option>
-            <option value="bio">自傳大綱</option>
-            <option value="email">教授推薦信邀請信</option>
-            <option value="scholarship">獎學金申請清單</option>
-            <option value="exchange">交換學生讀書計畫</option>
-            <option value="english">英文履歷用語</option>
+            <option value="resume">履歷條列改寫器</option>
+            <option value="checker">申請文件健檢</option>
+            <option value="bio">自傳段落規劃</option>
+            <option value="email">推薦信資料包</option>
+            <option value="checklist">送件清單產生器</option>
+            <option value="filename">檔案命名產生器</option>
           </select>
         </div>
 
@@ -68,11 +115,19 @@
         </label>
         <label>
           經歷與亮點
-          <textarea id="experience" rows="5" placeholder="例：專題、打工、社團、競賽、課程、證照、語言能力"></textarea>
+          <textarea id="experience" rows="5" placeholder="例：資料分析專題、咖啡廳打工、系學會活動、英文簡報競賽。也可以貼上你已寫好的自傳或履歷，使用健檢工具。"></textarea>
+        </label>
+        <label>
+          技能 / 工具 / 課程
+          <input id="skills" type="text" placeholder="例：Excel、Python、簡報、問卷分析、英文、多益 780">
+        </label>
+        <label>
+          成果數字 / 截止日
+          <input id="metric" type="text" placeholder="例：分析 120 份問卷、服務 60 位客人、2026/07/15 截止">
         </label>
 
         <div class="actions">
-          <button class="primary" type="submit">產生初稿</button>
+          <button class="primary" type="submit">產生結果</button>
           <button class="ghost" id="copyResult" type="button">複製結果</button>
         </div>
       </form>
@@ -83,38 +138,38 @@
         <p class="eyebrow">可直接修改</p>
         <h2>產出結果</h2>
       </div>
-      <pre id="resultBox">選擇工具並輸入資料後，這裡會產生你的申請文件初稿。</pre>
+      <pre id="resultBox">選擇工具並輸入資料後，這裡會產生可修改的結果、檢查分數或送件清單。</pre>
     </section>
 
     <section class="tool-grid-section" id="tools">
       <div class="section-heading">
-        <p class="eyebrow">第一版免費工具</p>
-        <h2>用工具頁吃長尾搜尋</h2>
+        <p class="eyebrow">第二版免費工具</p>
+        <h2>先解決真問題，再累積搜尋流量</h2>
       </div>
       <div class="tool-grid">
         <article>
-          <h3>實習履歷條列產生器</h3>
-          <p>把課程、專題、打工和社團轉成履歷可用的成果句。</p>
+          <h3>履歷條列改寫器</h3>
+          <p>依經歷類型、技能和成果數字，產生更像履歷的行動句。</p>
         </article>
         <article>
-          <h3>自傳大綱產生器</h3>
-          <p>整理成背景、動機、能力、未來規劃四段式結構。</p>
+          <h3>申請文件健檢</h3>
+          <p>檢查目標、行動、成果、技能、空泛句和長度，給出修改方向。</p>
         </article>
         <article>
-          <h3>推薦信邀請信</h3>
-          <p>產生寄給教授的禮貌信件，含附件與截止日期提醒。</p>
+          <h3>自傳段落規劃</h3>
+          <p>把背景、動機、能力證據與未來規劃拆成可改寫段落。</p>
         </article>
         <article>
-          <h3>獎學金清單</h3>
-          <p>依申請類型列出文件、證明、成績和送件前檢查項。</p>
+          <h3>推薦信資料包</h3>
+          <p>一次產生教授邀請信、附件清單與可供推薦的經歷摘要。</p>
         </article>
         <article>
-          <h3>交換讀書計畫</h3>
-          <p>產生交換學生常用的學習動機、選校理由和返國規劃。</p>
+          <h3>送件清單產生器</h3>
+          <p>根據申請目標與截止資訊，整理送件前 30 分鐘檢查清單。</p>
         </article>
         <article>
-          <h3>英文履歷用語</h3>
-          <p>把中文經歷轉成更像履歷的英文動詞和句型。</p>
+          <h3>檔案命名產生器</h3>
+          <p>產生一致的 PDF 檔名與資料夾命名，降低漏件和版本混亂。</p>
         </article>
       </div>
     </section>
@@ -144,44 +199,76 @@
       <div class="guide-list">
         <a href="pages/internship-resume.html">
           <span>實習履歷怎麼寫</span>
-          <small>從沒有工作經驗到一頁履歷</small>
+          <small>大學生實習履歷寫法，包含履歷架構、沒有工作經驗的寫法、專題與社團經歷轉換範例。</small>
         </a>
         <a href="pages/student-autobiography.html">
           <span>大學生自傳範例</span>
-          <small>四段式架構與內容取捨</small>
+          <small>大學生自傳怎麼寫，整理四段式架構、沒有特殊經歷的寫法與常見錯誤。</small>
         </a>
         <a href="pages/professor-recommendation-email.html">
-          <span>推薦信邀請信範例</span>
-          <small>寄給教授前先整理好資訊</small>
+          <span>教授推薦信邀請信範例</span>
+          <small>寄給教授的推薦信邀請信範例，包含主旨、內文、附件清單與提醒事項。</small>
         </a>
         <a href="pages/exchange-study-plan.html">
-          <span>交換學生讀書計畫</span>
-          <small>動機、選校、課程與返國規劃</small>
+          <span>交換學生讀書計畫怎麼寫</span>
+          <small>交換學生讀書計畫寫法，包含申請動機、選校理由、課程規劃、跨文化學習與返國貢獻。</small>
         </a>
         <a href="pages/scholarship-application.html">
-          <span>獎學金申請文件</span>
-          <small>自傳、證明與檢查清單</small>
+          <span>獎學金申請文件怎麼準備</span>
+          <small>大學生獎學金申請文件清單，包含自傳、成績單、證明文件、推薦資料和送件前檢查。</small>
         </a>
         <a href="pages/english-resume-phrases.html">
-          <span>英文履歷用語</span>
-          <small>動詞、句型與條列範例</small>
+          <span>英文履歷用語整理</span>
+          <small>英文履歷常用動詞與條列句型，協助大學生把課程、專題、社團和打工經驗寫成英文履歷。</small>
         </a>
         <a href="pages/cover-letter.html">
-          <span>Cover Letter 範例</span>
-          <small>實習與交換申請皆可改寫</small>
+          <span>Cover Letter 怎麼寫</span>
+          <small>大學生實習 Cover Letter 寫法，包含開頭、能力連結、結尾與英文求職信範例句。</small>
         </a>
         <a href="pages/graduate-school-portfolio.html">
-          <span>研究所推甄備審</span>
-          <small>資料順序與專題摘要</small>
+          <span>研究所推甄備審怎麼準備</span>
+          <small>研究所推甄備審資料準備方式，包含資料順序、專題摘要、自傳、讀書計畫與教授聯絡信。</small>
         </a>
         <a href="pages/interview-self-introduction.html">
-          <span>面試自我介紹</span>
-          <small>30 秒、1 分鐘、3 分鐘版本</small>
+          <span>面試自我介紹怎麼說</span>
+          <small>大學生面試自我介紹範例，整理 30 秒、1 分鐘、3 分鐘版本，適用實習、交換和研究所面試。</small>
         </a>
         <a href="pages/application-checklist.html">
           <span>申請文件總清單</span>
-          <small>送件前避免漏件</small>
+          <small>大學生申請文件總清單，送出實習、交換學生、獎學金或研究所申請前檢查檔案、內容與格式。</small>
         </a>
+        <a href="pages/resume-no-experience.html">
+          <span>沒有工作經驗履歷怎麼寫</span>
+          <small>沒有工作經驗的大學生履歷寫法，教你把課程、專題、社團、打工與志工經驗改成履歷條列。</small>
+        </a>
+        <a href="pages/cs-internship-resume.html">
+          <span>資工系實習履歷範例</span>
+          <small>資工系大學生實習履歷寫法，包含專題、GitHub、課程、Side Project 與技能欄位範例。</small>
+        </a>
+        <a href="pages/business-internship-resume.html">
+          <span>商管系實習履歷範例</span>
+          <small>商管系大學生實習履歷寫法，整理行銷、企劃、資料分析、社團與競賽經歷如何轉成履歷內容。</small>
+        </a>
+        <a href="pages/study-plan-template.html">
+          <span>讀書計畫模板</span>
+          <small>讀書計畫模板與段落架構，適用交換學生、研究所推甄與獎學金申請。</small>
+        </a>
+        <a href="pages/recommendation-letter-checklist.html">
+          <span>請教授寫推薦信要準備什麼</span>
+          <small>請教授寫推薦信前的準備清單，包含履歷、自傳、申請資訊、截止日期與提醒信注意事項。</small>
+        </a>
+      </div>
+    </section>
+
+    <section class="search-plan" id="search-plan">
+      <div class="section-heading">
+        <p class="eyebrow">搜尋引擎收錄</p>
+        <h2>這個網站如何被找到</h2>
+      </div>
+      <div class="tool-grid">
+        <article><h3>明確主題</h3><p>每頁只解決一個申請問題，讓搜尋者和搜尋引擎都能快速理解頁面用途。</p></article>
+        <article><h3>可爬連結</h3><p>所有指南都用一般 a 連結放在首頁與 sitemap 中，方便搜尋引擎發現。</p></article>
+        <article><h3>結構化資料</h3><p>文章頁加入 Article、Breadcrumb 和 FAQ 標記，提升搜尋結果理解度。</p></article>
       </div>
     </section>
 

@@ -22,162 +22,265 @@ const templates = {
   }
 };
 
-const sample = {
-  major: "你的科系與年級",
-  goal: "這次申請目標",
-  experience: "課程、專題、打工、社團、競賽或證照"
+const defaults = {
+  major: "大學生",
+  goal: "實習或申請項目",
+  experience: "課程專題、社團活動、打工經驗",
+  skills: "資料整理、簡報、團隊合作",
+  metric: "完成一份報告或活動"
 };
 
-function value(id) {
-  const raw = document.querySelector(id).value.trim();
-  return raw || sample[id.slice(1)];
+const actionVerbs = {
+  data: ["分析", "整理", "視覺化", "比較"],
+  service: ["接待", "協助", "回覆", "處理"],
+  project: ["規劃", "製作", "測試", "改善"],
+  leadership: ["協調", "分工", "追蹤", "帶領"],
+  writing: ["撰寫", "彙整", "簡報", "呈現"]
+};
+
+function getValue(id) {
+  const element = document.querySelector(id);
+  const raw = element ? element.value.trim() : "";
+  return raw || defaults[id.slice(1)];
 }
 
-function bulletize(text) {
+function splitItems(text) {
   return text
-    .split(/[，,、\n]/)
+    .split(/[，,、；;\n]/)
     .map((item) => item.trim())
     .filter(Boolean)
-    .slice(0, 6);
+    .slice(0, 8);
 }
 
-function generateResume(major, goal, experience) {
-  const items = bulletize(experience);
-  const bullets = items.length ? items : ["完成課程專題", "參與團隊合作", "整理資料並提出改善建議"];
-  return `實習履歷條列初稿
+function classify(item) {
+  if (/資料|數據|問卷|excel|python|分析|統計/i.test(item)) return "data";
+  if (/打工|服務|客人|客服|接待|店|餐/i.test(item)) return "service";
+  if (/社團|活動|系學會|隊|合作|幹部/i.test(item)) return "leadership";
+  if (/報告|自傳|文案|簡報|企劃|提案/i.test(item)) return "writing";
+  return "project";
+}
+
+function chooseVerb(item, index = 0) {
+  const verbs = actionVerbs[classify(item)];
+  return verbs[index % verbs.length];
+}
+
+function normalizeMetric(metric) {
+  if (!metric || metric === defaults.metric) return "留下可被檢查的成果";
+  return metric;
+}
+
+function generateResume({ major, goal, experience, skills, metric }) {
+  const items = splitItems(experience);
+  const skillItems = splitItems(skills);
+  const result = normalizeMetric(metric);
+  const bullets = items.map((item, index) => {
+    const verb = chooseVerb(item, index);
+    const skill = skillItems[index % skillItems.length] || "資料整理";
+    return `- ${verb}${item}，運用${skill}完成任務，並以「${result}」作為成果證據。`;
+  });
+
+  const stronger = items.map((item, index) => {
+    const verb = chooseVerb(item, index);
+    return `- ${verb}${item}：先釐清目標與限制，再整理執行步驟，最後用數字、作品或回饋證明成果。`;
+  });
+
+  return `履歷條列改寫結果
 
 申請目標：${goal}
 背景定位：${major}
+建議主軸：把「我做過什麼」改成「我如何完成任務，並產生什麼證據」。
 
-可放入履歷的經歷描述：
-${bullets.map((item) => `- 將「${item}」整理為具體成果，強調任務、方法與可量化影響。`).join("\n")}
+可直接放入履歷的版本：
+${bullets.join("\n")}
 
-履歷摘要範例：
-具備 ${major} 背景，正在申請 ${goal}。曾透過課程、專題或實務經驗累積資料整理、溝通協作與問題分析能力，能在明確目標下完成任務並持續優化成果。
+如果你還沒有明確數字，先用這個更保守的版本：
+${stronger.join("\n")}
+
+履歷摘要：
+${major}，正在申請 ${goal}。具備${skillItems.slice(0, 3).join("、")}等基礎能力，曾透過${items.slice(0, 3).join("、")}累積執行與整理經驗，能在明確目標下完成任務並回報成果。
 
 下一步：
-- 把每一條補上數字，例如人數、金額、週期、成效。
-- 刪掉無法證明的形容詞，改成具體行動。
-- 一頁履歷只保留最貼近 ${goal} 的經歷。`;
+- 把「${result}」改成真正數字，例如份數、人數、週期、排名、金額或回饋。
+- 每條履歷控制在 35-55 字。
+- 刪掉不能被證明的形容詞，例如認真、積極、負責。`;
 }
 
-function generateBio(major, goal, experience) {
-  return `自傳大綱初稿
-
-第一段：背景與申請動機
-我是 ${major}，這次申請 ${goal}。過去的學習與經歷讓我開始關注這個方向，並希望透過這次機會累積更完整的實務能力。
-
-第二段：能力證據
-我曾經參與或完成：${experience}。這些經驗讓我練習資料整理、時間管理、團隊溝通與問題拆解，也讓我更理解自己適合的工作方式。
-
-第三段：與申請目標的連結
-${goal} 需要的不只是興趣，也需要穩定執行與學習能力。我希望把目前累積的基礎帶進新的環境，並在實際任務中補足不足。
-
-第四段：未來規劃
-若有機會錄取，我會先熟悉制度與任務，再主動整理學習紀錄，將成果回饋到後續課業、職涯或校內分享。`;
+function scoreText(text) {
+  const checks = [
+    { name: "有明確申請目標", pass: /申請|實習|交換|獎學金|研究所|職位|目標/.test(text) },
+    { name: "有具體行動", pass: /分析|規劃|協助|完成|製作|整理|撰寫|協調|改善|設計|執行/.test(text) },
+    { name: "有成果或數字", pass: /\d|人|份|%|名|週|月|元|次|篇|場/.test(text) },
+    { name: "有技能或工具", pass: /Excel|Python|簡報|英文|問卷|資料|Canva|Notion|GitHub|SQL|PowerPoint/i.test(text) },
+    { name: "沒有過度空泛", pass: !/受益良多|學到很多|拓展視野|認真負責|積極學習/.test(text) },
+    { name: "長度足夠", pass: text.length >= 120 }
+  ];
+  const passed = checks.filter((item) => item.pass).length;
+  return { checks, score: Math.round((passed / checks.length) * 100) };
 }
 
-function generateEmail(major, goal, experience) {
-  return `教授推薦信邀請信範例
+function generateChecker({ goal, experience }) {
+  const text = `${goal}\n${experience}`.trim();
+  const { checks, score } = scoreText(text);
+  const failed = checks.filter((item) => !item.pass);
+  const advice = failed.length
+    ? failed.map((item) => `- 補強：${item.name}`).join("\n")
+    : "- 結構已經不錯，下一步是壓字數與加入更貼近申請單位的關鍵詞。";
 
-主旨：推薦信邀請 - ${major} 學生申請 ${goal}
+  return `申請文件健檢
+
+分數：${score}/100
+
+檢查結果：
+${checks.map((item) => `${item.pass ? "✓" : "✗"} ${item.name}`).join("\n")}
+
+優先修改：
+${advice}
+
+改寫原則：
+- 每一段都要回答「我做了什麼、怎麼做、結果是什麼」。
+- 空泛句改成具體證據，例如把「學到很多」改成「完成 12 頁分析報告並在小組簡報中負責結論段落」。
+- 如果是自傳，第一段要連到申請目標；如果是履歷，每條都要有動詞開頭。`;
+}
+
+function generateBio({ major, goal, experience, skills, metric }) {
+  const items = splitItems(experience);
+  const skillItems = splitItems(skills);
+  return `自傳段落規劃
+
+申請目標：${goal}
+身份定位：${major}
+
+第一段：我為什麼申請
+我是 ${major}，這次申請 ${goal}。我不是只因為感興趣而申請，而是因為過去在「${items[0] || experience}」中，開始接觸到${skillItems[0] || "資料整理"}與問題拆解，發現自己想把這些能力放到更實際的環境中驗證。
+
+第二段：我有什麼證據
+我曾經參與 ${items.slice(0, 3).join("、")}。這些經驗讓我練習${skillItems.slice(0, 4).join("、")}，也讓我理解完成任務不只需要想法，還需要把流程拆清楚、準時交付，並留下像「${normalizeMetric(metric)}」這樣可被檢查的成果。
+
+第三段：我和申請單位的連結
+${goal} 需要穩定學習、溝通與執行能力。我的優勢不是經驗很多，而是能從有限經驗中整理方法，並把任務轉成可追蹤的步驟。
+
+第四段：錄取後規劃
+若有機會錄取，我會先熟悉任務要求，再主動記錄學習過程與成果，將這次經驗延伸到後續課業、職涯規劃或校內分享。
+
+提醒：
+- 這是段落骨架，不要整段原封不動送出。
+- 把每段第一句改成更像你自己的語氣。
+- 至少加入一個真實事件，讓內容不像通用模板。`;
+}
+
+function generateEmailPack({ major, goal, experience, skills, metric }) {
+  const deadline = metric.includes("/") || metric.includes("截止") ? metric : "請填入截止日期";
+  return `推薦信資料包
+
+一、寄給教授的信
+主旨：推薦信邀請 - ${major} 申請 ${goal}
 
 教授您好：
 
-我是 ${major} 的學生。近期我準備申請 ${goal}，想請問老師是否方便為我撰寫推薦信。
+我是 ${major}。近期我準備申請 ${goal}，想請問老師是否方便協助撰寫推薦信。
 
-我整理了這次申請需要的資訊，包含申請目標、截止日期、履歷、自傳草稿，以及我過去與課程或專題相關的經歷：${experience}。
+為了減少老師整理資料的時間，我已先準備申請項目、截止日期、履歷與經歷摘要。這次推薦信截止資訊為：${deadline}。
 
-若老師願意協助，我會將所有資料整理成一份文件寄給您，並標註推薦信提交方式與期限，盡量減少老師額外整理的時間。
+我希望老師可以參考的經歷包含：${experience}。相關能力包含：${skills}。若老師願意協助，我會再將所有資料整理成一份文件寄給您。
 
 謝謝老師撥冗閱讀，也理解老師行程繁忙。若這次時間不方便，也完全沒有問題。
 
 敬祝 平安順心
-你的姓名`;
+你的姓名
+
+二、要附上的資料
+- 履歷 PDF
+- 自傳或讀書計畫草稿
+- 申請項目網址或簡章
+- 截止日期與提交方式：${deadline}
+- 希望老師提到的 3 個重點：${splitItems(skills).slice(0, 3).join("、")}
+- 你的代表經歷：${experience}
+
+三、給教授看的經歷摘要
+${major}，申請 ${goal}。曾參與 ${experience}，並透過${skills}累積申請所需能力。可被提及的成果或證據為：${normalizeMetric(metric)}。`;
 }
 
-function generateScholarship(major, goal, experience) {
-  return `獎學金申請檢查清單
+function generateChecklist({ major, goal, experience, skills, metric }) {
+  const isDeadline = /\d{4}|\d{1,2}\/\d{1,2}|截止|前/.test(metric);
+  const deadline = isDeadline ? metric : "尚未填寫，請先確認官方簡章";
+  return `送件清單
 
-申請人背景：${major}
+申請人：${major}
 申請項目：${goal}
+截止資訊：${deadline}
 
-基本文件：
+必備文件：
 - 申請表
-- 學生證或在學證明
-- 成績單
-- 自傳或申請動機
-- 相關證明文件
+- 履歷或個人資料表
+- 自傳 / 讀書計畫 / 申請動機
+- 成績單或在學證明
+- 相關證明：${experience}
+- 技能或語言證明：${skills}
 
-加分材料：
-- ${experience}
-- 競賽、服務、社團、專題或打工證明
-- 家庭或特殊狀況說明
-- 老師、主管或導師推薦
+送出前 30 分鐘檢查：
+- 每個 PDF 都能正常開啟
+- 檔名包含姓名、申請項目、文件類型
+- 自傳與履歷中的日期、經歷名稱一致
+- 推薦信提交方式已確認
+- 雲端連結權限不是私人
+- 信件主旨有寫清楚申請項目
 
-送出前檢查：
-- 所有檔名格式一致
-- 截止日期與送件方式確認
-- 自傳有連回獎學金宗旨
-- 證明文件順序與目錄一致
-- PDF 開啟正常，沒有缺頁或模糊掃描`;
+風險提醒：
+${isDeadline ? "- 你已填入截止資訊，請再確認時區與送件方式。" : "- 你還沒有填明確截止日，這是目前最大風險。"}
+- 若需要推薦信，至少提前 2-3 週詢問教授。
+- 不要在最後一天才掃描或合併 PDF。`;
 }
 
-function generateExchange(major, goal, experience) {
-  return `交換學生讀書計畫初稿
+function generateFilename({ major, goal }) {
+  const cleanMajor = major.replace(/[^\u4e00-\u9fa5A-Za-z0-9]/g, "").slice(0, 12) || "學生";
+  const cleanGoal = goal.replace(/[^\u4e00-\u9fa5A-Za-z0-9]/g, "").slice(0, 16) || "申請項目";
+  const date = new Date().toISOString().slice(0, 10);
+  return `檔案命名建議
 
-一、申請動機
-我是 ${major}，希望透過 ${goal} 拓展專業視野與跨文化溝通能力。過去的學習經驗讓我意識到，只在原本環境中學習仍有侷限，因此期待到不同教育環境中比較課程、方法與產業觀點。
+統一格式：
+姓名_${cleanGoal}_文件類型_${date}.pdf
 
-二、過去準備
-目前我已累積以下經驗：${experience}。這些經驗讓我具備基本的自我管理、團隊合作與問題解決能力，也能支持我在交換期間適應新的課業節奏。
+範例：
+- 王小明_${cleanGoal}_履歷_${date}.pdf
+- 王小明_${cleanGoal}_自傳_${date}.pdf
+- 王小明_${cleanGoal}_讀書計畫_${date}.pdf
+- 王小明_${cleanGoal}_成績單_${date}.pdf
+- 王小明_${cleanGoal}_證明文件_${date}.pdf
 
-三、課程與學習規劃
-交換期間，我會優先選修與本科系及未來職涯相關的課程，並記錄課程內容、報告方法與小組合作模式，作為返國後延伸學習的基礎。
+資料夾命名：
+${date}_${cleanMajor}_${cleanGoal}_送件版
 
-四、返國後規劃
-返國後，我會將交換期間的課程心得與申請經驗整理成分享資料，提供給同系或有意申請交換的同學參考。`;
+不要使用：
+- final.pdf
+- final2.pdf
+- 新增 Microsoft Word 文件.pdf
+- 真的最後版.pdf`;
 }
 
-function generateEnglish(major, goal, experience) {
-  const items = bulletize(experience);
-  const bullets = items.length ? items : ["course project", "team activity", "part-time work"];
-  return `英文履歷用語轉換
-
-Profile:
-${major} student seeking ${goal}, with hands-on experience in academic projects, teamwork, and structured problem solving.
-
-Action verbs:
-- Analyzed
-- Coordinated
-- Developed
-- Organized
-- Presented
-- Improved
-
-Bullet drafts:
-${bullets.map((item) => `- Organized and improved ${item} by clarifying tasks, tracking progress, and presenting outcomes to stakeholders.`).join("\n")}
-
-Cover letter sentence:
-I am interested in ${goal} because it matches my academic background in ${major} and my experience with ${experience}.`;
-}
-
-function generate(type, major, goal, experience) {
-  const map = {
+function generate(type, data) {
+  const tools = {
     resume: generateResume,
+    checker: generateChecker,
     bio: generateBio,
-    email: generateEmail,
-    scholarship: generateScholarship,
-    exchange: generateExchange,
-    english: generateEnglish
+    email: generateEmailPack,
+    checklist: generateChecklist,
+    filename: generateFilename
   };
-  return map[type](major, goal, experience);
+  return tools[type](data);
 }
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  const data = {
+    major: getValue("#major"),
+    goal: getValue("#goal"),
+    experience: getValue("#experience"),
+    skills: getValue("#skills"),
+    metric: getValue("#metric")
+  };
   const type = document.querySelector("#toolType").value;
-  resultBox.textContent = generate(type, value("#major"), value("#goal"), value("#experience"));
+  resultBox.textContent = generate(type, data);
 });
 
 copyButton.addEventListener("click", async () => {
