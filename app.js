@@ -1,6 +1,7 @@
 const form = document.querySelector("#toolForm");
 const resultBox = document.querySelector("#resultBox");
 const copyButton = document.querySelector("#copyResult");
+const downloadButton = document.querySelector("#downloadResult");
 const templateOutput = document.querySelector("#templateOutput");
 
 const templates = {
@@ -27,7 +28,9 @@ const defaults = {
   goal: "實習或申請項目",
   experience: "課程專題、社團活動、打工經驗",
   skills: "資料整理、簡報、團隊合作",
-  metric: "完成一份報告或活動"
+  metric: "完成一份報告或活動",
+  targetText: "",
+  tone: "balanced"
 };
 
 const actionVerbs = {
@@ -70,7 +73,56 @@ function normalizeMetric(metric) {
   return metric;
 }
 
-function generateResume({ major, goal, experience, skills, metric }) {
+function extractKeywords(text) {
+  const latinWords = text
+    .replace(/[^\u4e00-\u9fa5A-Za-z0-9+#\s]/g, " ")
+    .split(/\s+/)
+    .map((word) => word.trim())
+    .filter(Boolean);
+  const zhPhrases = [...text.matchAll(/[\u4e00-\u9fa5]{2,8}/g)].map((match) => match[0]);
+  const stopPattern = /申請|工作|職缺|公司|學生|能力|經驗|需要|具備|熟悉|我們|以及|相關|條件|尤佳|負責/;
+  return [...new Set([...latinWords, ...zhPhrases])]
+    .filter((word) => word.length >= 2)
+    .filter((word) => !stopPattern.test(word))
+    .slice(0, 14);
+}
+
+function keywordReport(profileText, targetText) {
+  const keywords = extractKeywords(targetText);
+  if (!keywords.length) return { score: null, keywords: [], matched: [], missing: [] };
+  const source = profileText.toLowerCase();
+  const matched = keywords.filter((keyword) => source.includes(keyword.toLowerCase()));
+  const missing = keywords.filter((keyword) => !matched.includes(keyword));
+  return {
+    score: Math.round((matched.length / keywords.length) * 100),
+    keywords,
+    matched,
+    missing
+  };
+}
+
+function keywordSection(data) {
+  const report = keywordReport(`${data.major} ${data.goal} ${data.experience} ${data.skills} ${data.metric}`, data.targetText || "");
+  if (report.score === null) {
+    return "關鍵字匹配：尚未貼上職缺或簡章。建議貼上目標內容，工具才能檢查你缺少哪些關鍵字。";
+  }
+  return `關鍵字匹配：${report.score}/100
+已命中：${report.matched.length ? report.matched.join("、") : "尚未命中"}
+建議補強：${report.missing.length ? report.missing.slice(0, 8).join("、") : "目前沒有明顯缺口"}`;
+}
+
+function toneLine(tone) {
+  const lines = {
+    balanced: "語氣策略：穩健正式，適合多數實習、獎學金與交換申請。",
+    concise: "語氣策略：精簡直接，句子應更短，避免過多背景鋪陳。",
+    confident: "語氣策略：自信積極，可以更明確寫出成果，但不要誇大。",
+    warm: "語氣策略：禮貌溫和，適合寄給教授、行政單位或需要請託協助的情境。"
+  };
+  return lines[tone] || lines.balanced;
+}
+
+function generateResume(data) {
+  const { major, goal, experience, skills, metric, tone } = data;
   const items = splitItems(experience);
   const skillItems = splitItems(skills);
   const result = normalizeMetric(metric);
@@ -79,7 +131,6 @@ function generateResume({ major, goal, experience, skills, metric }) {
     const skill = skillItems[index % skillItems.length] || "資料整理";
     return `- ${verb}${item}，運用${skill}完成任務，並以「${result}」作為成果證據。`;
   });
-
   const stronger = items.map((item, index) => {
     const verb = chooseVerb(item, index);
     return `- ${verb}${item}：先釐清目標與限制，再整理執行步驟，最後用數字、作品或回饋證明成果。`;
@@ -89,6 +140,7 @@ function generateResume({ major, goal, experience, skills, metric }) {
 
 申請目標：${goal}
 背景定位：${major}
+${toneLine(tone)}
 建議主軸：把「我做過什麼」改成「我如何完成任務，並產生什麼證據」。
 
 可直接放入履歷的版本：
@@ -99,6 +151,8 @@ ${stronger.join("\n")}
 
 履歷摘要：
 ${major}，正在申請 ${goal}。具備${skillItems.slice(0, 3).join("、")}等基礎能力，曾透過${items.slice(0, 3).join("、")}累積執行與整理經驗，能在明確目標下完成任務並回報成果。
+
+${keywordSection(data)}
 
 下一步：
 - 把「${result}」改成真正數字，例如份數、人數、週期、排名、金額或回饋。
@@ -119,8 +173,8 @@ function scoreText(text) {
   return { checks, score: Math.round((passed / checks.length) * 100) };
 }
 
-function generateChecker({ goal, experience }) {
-  const text = `${goal}\n${experience}`.trim();
+function generateChecker(data) {
+  const text = `${data.goal}\n${data.experience}\n${data.skills}\n${data.metric}`.trim();
   const { checks, score } = scoreText(text);
   const failed = checks.filter((item) => !item.pass);
   const advice = failed.length
@@ -134,6 +188,8 @@ function generateChecker({ goal, experience }) {
 檢查結果：
 ${checks.map((item) => `${item.pass ? "✓" : "✗"} ${item.name}`).join("\n")}
 
+${keywordSection(data)}
+
 優先修改：
 ${advice}
 
@@ -143,13 +199,15 @@ ${advice}
 - 如果是自傳，第一段要連到申請目標；如果是履歷，每條都要有動詞開頭。`;
 }
 
-function generateBio({ major, goal, experience, skills, metric }) {
+function generateBio(data) {
+  const { major, goal, experience, skills, metric, tone } = data;
   const items = splitItems(experience);
   const skillItems = splitItems(skills);
   return `自傳段落規劃
 
 申請目標：${goal}
 身份定位：${major}
+${toneLine(tone)}
 
 第一段：我為什麼申請
 我是 ${major}，這次申請 ${goal}。我不是只因為感興趣而申請，而是因為過去在「${items[0] || experience}」中，開始接觸到${skillItems[0] || "資料整理"}與問題拆解，發現自己想把這些能力放到更實際的環境中驗證。
@@ -163,15 +221,20 @@ ${goal} 需要穩定學習、溝通與執行能力。我的優勢不是經驗很
 第四段：錄取後規劃
 若有機會錄取，我會先熟悉任務要求，再主動記錄學習過程與成果，將這次經驗延伸到後續課業、職涯規劃或校內分享。
 
+${keywordSection(data)}
+
 提醒：
 - 這是段落骨架，不要整段原封不動送出。
 - 把每段第一句改成更像你自己的語氣。
 - 至少加入一個真實事件，讓內容不像通用模板。`;
 }
 
-function generateEmailPack({ major, goal, experience, skills, metric }) {
+function generateEmailPack(data) {
+  const { major, goal, experience, skills, metric, tone } = data;
   const deadline = metric.includes("/") || metric.includes("截止") ? metric : "請填入截止日期";
   return `推薦信資料包
+
+${toneLine(tone)}
 
 一、寄給教授的信
 主旨：推薦信邀請 - ${major} 申請 ${goal}
@@ -201,7 +264,8 @@ function generateEmailPack({ major, goal, experience, skills, metric }) {
 ${major}，申請 ${goal}。曾參與 ${experience}，並透過${skills}累積申請所需能力。可被提及的成果或證據為：${normalizeMetric(metric)}。`;
 }
 
-function generateChecklist({ major, goal, experience, skills, metric }) {
+function generateChecklist(data) {
+  const { major, goal, experience, skills, metric } = data;
   const isDeadline = /\d{4}|\d{1,2}\/\d{1,2}|截止|前/.test(metric);
   const deadline = isDeadline ? metric : "尚未填寫，請先確認官方簡章";
   return `送件清單
@@ -225,6 +289,8 @@ function generateChecklist({ major, goal, experience, skills, metric }) {
 - 推薦信提交方式已確認
 - 雲端連結權限不是私人
 - 信件主旨有寫清楚申請項目
+
+${keywordSection(data)}
 
 風險提醒：
 ${isDeadline ? "- 你已填入截止資訊，請再確認時區與送件方式。" : "- 你還沒有填明確截止日，這是目前最大風險。"}
@@ -277,7 +343,9 @@ form.addEventListener("submit", (event) => {
     goal: getValue("#goal"),
     experience: getValue("#experience"),
     skills: getValue("#skills"),
-    metric: getValue("#metric")
+    metric: getValue("#metric"),
+    targetText: getValue("#targetText"),
+    tone: getValue("#tone")
   };
   const type = document.querySelector("#toolType").value;
   resultBox.textContent = generate(type, data);
@@ -289,6 +357,18 @@ copyButton.addEventListener("click", async () => {
   window.setTimeout(() => {
     copyButton.textContent = "複製結果";
   }, 1200);
+});
+
+downloadButton.addEventListener("click", () => {
+  const blob = new Blob([resultBox.textContent], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `application-toolkit-${new Date().toISOString().slice(0, 10)}.txt`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 });
 
 document.querySelectorAll("[data-template]").forEach((button) => {

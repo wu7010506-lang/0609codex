@@ -125,10 +125,24 @@
           成果數字 / 截止日
           <input id="metric" type="text" placeholder="例：分析 120 份問卷、服務 60 位客人、2026/07/15 截止">
         </label>
+        <label>
+          職缺描述 / 申請簡章重點
+          <textarea id="targetText" rows="4" placeholder="貼上職缺、實習公告、獎學金簡章或交換學生甄選條件，工具會比對你的經歷和關鍵字。"></textarea>
+        </label>
+        <label>
+          輸出語氣
+          <select id="tone" aria-label="選擇輸出語氣">
+            <option value="balanced">穩健正式</option>
+            <option value="concise">精簡直接</option>
+            <option value="confident">自信積極</option>
+            <option value="warm">禮貌溫和</option>
+          </select>
+        </label>
 
         <div class="actions">
           <button class="primary" type="submit">產生結果</button>
           <button class="ghost" id="copyResult" type="button">複製結果</button>
+          <button class="ghost" id="downloadResult" type="button">下載 TXT</button>
         </div>
       </form>
     </section>
@@ -145,6 +159,13 @@
       <div class="section-heading">
         <p class="eyebrow">第二版免費工具</p>
         <h2>先解決真問題，再累積搜尋流量</h2>
+      </div>
+      <div class="promise-strip" aria-label="工具特色">
+        <span>免註冊</span>
+        <span>不需付費 API</span>
+        <span>可貼職缺/簡章</span>
+        <span>可下載文字檔</span>
+        <span>瀏覽器內完成</span>
       </div>
       <div class="tool-grid">
         <article>
@@ -170,6 +191,30 @@
         <article>
           <h3>檔案命名產生器</h3>
           <p>產生一致的 PDF 檔名與資料夾命名，降低漏件和版本混亂。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="workflow-section" aria-labelledby="workflow-title">
+      <div class="section-heading">
+        <p class="eyebrow">使用流程</p>
+        <h2 id="workflow-title">三步驟產出可修改版本</h2>
+      </div>
+      <div class="workflow-list">
+        <article>
+          <strong>01</strong>
+          <h3>填入你的經歷</h3>
+          <p>輸入科系、申請目標、經歷、技能與成果數字。沒有數字也可以先填大概成果。</p>
+        </article>
+        <article>
+          <strong>02</strong>
+          <h3>貼上職缺或簡章</h3>
+          <p>工具會抓出對方重視的關鍵字，並比對你的內容缺什麼。</p>
+        </article>
+        <article>
+          <strong>03</strong>
+          <h3>下載與修改</h3>
+          <p>複製或下載 TXT 初稿，再依真實經歷和申請單位要求修成最終版。</p>
         </article>
       </div>
     </section>
@@ -256,6 +301,14 @@
         <a href="pages/recommendation-letter-checklist.html">
           <span>請教授寫推薦信要準備什麼</span>
           <small>請教授寫推薦信前的準備清單，包含履歷、自傳、申請資訊、截止日期與提醒信注意事項。</small>
+        </a>
+        <a href="pages/resume-keyword-match.html">
+          <span>履歷關鍵字匹配工具</span>
+          <small>貼上職缺或申請簡章，檢查履歷、自傳和申請資料缺少哪些關鍵字。</small>
+        </a>
+        <a href="pages/free-student-resume-tools.html">
+          <span>免費免註冊學生履歷工具</span>
+          <small>整理本站工具特色：免登入、免付費、瀏覽器內產生、可複製與下載文字檔。</small>
         </a>
       </div>
     </section>
